@@ -12,8 +12,7 @@ app.get("/:hex/:alpha?", (req, res) => {
     </svg>
   `.trim();
 
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.send(svg);
+  res.status(200).type("image/svg+xml").send(svg);
 });
 
 module.exports = app;
