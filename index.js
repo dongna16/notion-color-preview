@@ -13,32 +13,32 @@ module.exports = createServer((req, res) => {
   let hex = cleanHex.slice(0, 6);
   let opacity = "1.0";
 
-  // 🎯 8자리 HEX (RRGGBBAA)
+  // ✅ 8자리 HEX (rrggbbaa)
   if (cleanHex.length === 8) {
     hex = cleanHex.slice(0, 6);
     const alphaHex = cleanHex.slice(6, 8);
     opacity = hexToAlpha(alphaHex);
   }
 
-  // 🎯 /[alpha] (%)
+  // ✅ /[alpha] (%)
   else if (alphaRaw) {
     const alphaPct = Math.min(Math.max(parseInt(alphaRaw), 0), 100);
     opacity = (alphaPct / 100).toFixed(2);
   }
 
-  // 🧱 체커보드 + 색상 사각형 SVG
+  // ✅ 40x40 체커보드: 5x5칸 * 8px
+  let checkerRects = "";
+  for (let y = 0; y < 40; y += 8) {
+    for (let x = 0; x < 40; x += 8) {
+      const isDark = (x + y) % 16 === 0;
+      const color = isDark ? "#bbb" : "#ddd";
+      checkerRects += `<rect x="${x}" y="${y}" width="8" height="8" fill="${color}" />\n`;
+    }
+  }
+
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-      <defs>
-        <pattern id="checker" width="8" height="8" patternUnits="userSpaceOnUse">
-          <rect width="8" height="8" fill="#ddd"/>
-          <rect width="4" height="4" fill="#bbb"/>
-          <rect x="4" y="4" width="4" height="4" fill="#bbb"/>
-        </pattern>
-      </defs>
-      <!-- 🔲 배경: 체크 패턴 -->
-      <rect width="40" height="40" fill="url(#checker)" />
-      <!-- 🎨 위에 색상 레이어 -->
+      ${checkerRects.trim()}
       <rect width="40" height="40" fill="#${hex}" fill-opacity="${opacity}" />
     </svg>
   `.trim();
