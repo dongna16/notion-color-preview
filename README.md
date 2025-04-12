@@ -25,5 +25,5 @@ lets(
     "",
     "/" + format(round(alpha))
   ),
-  "https://your-project.vercel.app/" + hex + alphaPath
+  "https://notion-color-preview.app/" + hex + alphaPath
 )
