@@ -1,10 +1,9 @@
 import { Resvg } from '@resvg/resvg-js'
 
 export default async function handler(req, res) {
-  const { color = '' } = req.query
-  const [hexRaw, alphaRaw] = color.split('/')
-  const hex = hexRaw?.toLowerCase() || ''
-  const alpha = Math.max(0, Math.min(parseInt(alphaRaw || '100'), 100))
+  const [hexRaw = '', alphaRaw = '100'] = req.query.color || []
+  const hex = hexRaw.toLowerCase()
+  const alpha = Math.max(0, Math.min(parseInt(alphaRaw), 100))
   const opacity = alpha / 100
 
   // HEX 유효성 검사
@@ -23,8 +22,15 @@ export default async function handler(req, res) {
           <rect x="4" y="4" width="4" height="4" fill="#e1e1e1"/>
         </pattern>
       </defs>
-      <rect width="48" height="48" fill="#${hex}" />
-      <rect x="24" width="24" height="48" fill="url(#checker)" fill-opacity="${opacity}" />
+
+      <!-- 왼쪽 절반: 컬러 (불투명) -->
+      <rect x="0" y="0" width="24" height="48" fill="#${hex}" />
+
+      <!-- 오른쪽 절반: 체커보드 -->
+      <rect x="24" y="0" width="24" height="48" fill="url(#checker)" />
+
+      <!-- 오른쪽 절반 위에 색상 덮기 (투명도 적용) -->
+      <rect x="24" y="0" width="24" height="48" fill="#${hex}" fill-opacity="${opacity}" />
     </svg>
   `
 
