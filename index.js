@@ -24,13 +24,13 @@ module.exports = createServer((req, res) => {
 
   // ✅ 체커보드를 오른쪽 24px에만 그림 (x = 24~48)
   let checkerRects = "";
-  for (let y = 0; y < 48; y += 8) {
-    for (let x = 24; x < 48; x += 8) {
-      const isDark = (x + y) % 16 === 0;
-      const color = isDark ? "#bbb" : "#ddd";
-      checkerRects += `<rect x="${x}" y="${y}" width="8" height="8" fill="${color}" />\n`;
-    }
+  for (let y = 0; y < height; y += 8) {
+  for (let x = 24; x < width; x += 8) {
+    const isDark = (x + y) % 16 === 0;
+    const color = isDark ? "#999" : "#fff"; // 👈 대비 강화
+    checkerRects += `<rect x="${x}" y="${y}" width="8" height="8" fill="${color}" />\n`;
   }
+}
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
