@@ -48,5 +48,5 @@ lets(
 
   /* 🔗 최종 URL 구성: 배포된 SVG 서버 주소 + HEX + (선택적) alphaPath
      → 이미지 속성에 붙여 넣으면 색상 미리보기 자동 생성 */
-  "https://notion-color-preview.vercel.app/" + hex + alphaPath
+  "https://notioncolorpreview.vercel.app/" + hex + alphaPath
 )
