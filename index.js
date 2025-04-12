@@ -4,7 +4,6 @@ module.exports = createServer((req, res) => {
   const path = req.url?.split("?")[0]?.slice(1) || "";
   const [hexRaw, alphaRaw] = path.split("/");
 
-  // HEX 클렌징: 6자리 알파벳+숫자만 남기기
   const hex = (hexRaw || "000000").replace(/[^a-fA-F0-9]/g, "").slice(0, 6);
   const alpha = Math.max(0, Math.min(parseInt(alphaRaw || "100", 10), 100));
   const opacity = (alpha / 100).toFixed(2);
