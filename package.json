@@ -1,7 +1,5 @@
 {
-    "name": "notion-color-preview",
-    "version": "1.0.0",
-    "dependencies": {
-      "express": "^4.18.2"
-    }
-  }
+  "name": "notion-color-preview",
+  "version": "1.0.0",
+  "dependencies": {}
+}
