@@ -9,9 +9,9 @@ function hexToAlpha(hex2) {
 module.exports = createServer((req, res) => {
   const url = req.url?.split("?")[0] || "/";
   if (url === "/" || url.includes("favicon")) {
-    res.writeHead(200, { "Content-Type": "text/plain" });
-    return res.end("🎨 Notion Color Preview Server is live");
-  }
+  res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+  return res.end("🎨 Notion Color Preview Server is live");
+}
 
   const path = url.replace(/^\/(flat\/)?/, "");
   const [rawHex, alphaRaw] = path.split("/");
