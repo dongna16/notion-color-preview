@@ -9,7 +9,7 @@ module.exports = createServer((req, res) => {
   const url = req.url?.split("?")[0] || "/";
   if (url === "/" || url.includes("favicon")) {
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
-    return res.end("🎨 Notion Color Preview Server is live");
+    return res.end("🎨 Notion color preview server is live");
   }
 
   const path = url.replace(/^\/(flat\/)?/, "");
