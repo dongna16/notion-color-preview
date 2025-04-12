@@ -22,6 +22,7 @@ module.exports = createServer((req, res) => {
     opacity = (alphaPct / 100).toFixed(2);
   }
 
+  // ✅ 체커보드는 오른쪽 20px에만 그리기
   let checkerRects = "";
   for (let y = 0; y < 40; y += 8) {
     for (let x = 20; x < 40; x += 8) {
@@ -33,10 +34,10 @@ module.exports = createServer((req, res) => {
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-      <!-- 오른쪽: 체커보드 배경 -->
+      <!-- 오른쪽 반만 체커보드 -->
       ${checkerRects.trim()}
-      <!-- 왼쪽: 색상 블록 (투명도 포함) -->
-      <rect x="0" y="0" width="20" height="40" fill="#${hex}" fill-opacity="${opacity}" />
+      <!-- 전체를 색상으로 덮기 -->
+      <rect width="40" height="40" fill="#${hex}" fill-opacity="${opacity}" />
     </svg>
   `.trim();
 
