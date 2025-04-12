@@ -1,6 +1,8 @@
 import { Resvg } from '@resvg/resvg-js'
 
 export default async function handler(req, res) {
+  console.log('color param:', req.query.color)
+
   const [hexRaw = '', alphaRaw = '100'] = req.query.color || []
   const hex = hexRaw.toLowerCase()
   const alpha = Math.max(0, Math.min(parseInt(alphaRaw), 100))
