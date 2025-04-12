@@ -13,23 +13,18 @@ module.exports = createServer((req, res) => {
   let hex = cleanHex.slice(0, 6);
   let opacity = "1.0";
 
-  // ✅ 8자리 HEX (rrggbbaa)
   if (cleanHex.length === 8) {
     hex = cleanHex.slice(0, 6);
     const alphaHex = cleanHex.slice(6, 8);
     opacity = hexToAlpha(alphaHex);
-  }
-
-  // ✅ /[alpha] (%)
-  else if (alphaRaw) {
+  } else if (alphaRaw) {
     const alphaPct = Math.min(Math.max(parseInt(alphaRaw), 0), 100);
     opacity = (alphaPct / 100).toFixed(2);
   }
 
-  // ✅ 40x40 체커보드: 5x5칸 * 8px
   let checkerRects = "";
   for (let y = 0; y < 40; y += 8) {
-    for (let x = 0; x < 40; x += 8) {
+    for (let x = 20; x < 40; x += 8) {
       const isDark = (x + y) % 16 === 0;
       const color = isDark ? "#bbb" : "#ddd";
       checkerRects += `<rect x="${x}" y="${y}" width="8" height="8" fill="${color}" />\n`;
@@ -38,8 +33,10 @@ module.exports = createServer((req, res) => {
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+      <!-- 오른쪽: 체커보드 배경 -->
       ${checkerRects.trim()}
-      <rect width="40" height="40" fill="#${hex}" fill-opacity="${opacity}" />
+      <!-- 왼쪽: 색상 블록 (투명도 포함) -->
+      <rect x="0" y="0" width="20" height="40" fill="#${hex}" fill-opacity="${opacity}" />
     </svg>
   `.trim();
 
