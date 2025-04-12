@@ -30,7 +30,7 @@ module.exports = createServer((req, res) => {
   for (let y = 0; y < height; y += 8) {
     for (let x = 24; x < width; x += 8) {
       const isDark = (x + y) % 16 === 0;
-      const color = isDark ? "#999" : "#fff"; // 👈 대비 강화
+      const color = isDark ? "#bbb" : "#ddd";
       checkerRects += `<rect x="${x}" y="${y}" width="8" height="8" fill="${color}" />\n`;
     }
   }
