@@ -7,15 +7,18 @@ function hexToAlpha(hex2) {
 }
 
 const server = createServer(async (req, res) => {
-  const url = req.url?.split("?")[0] || "/"
+  const rawUrl = req.url?.split("?")[0] || "/"
 
-  if (url === "/" || url.includes("favicon")) {
+  if (rawUrl === "/" || rawUrl.includes("favicon")) {
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" })
     return res.end("🎨 Notion Color Preview Server is live")
   }
 
-  const path = url.replace(/^\/(flat\/)?/, "")
+  // 🔄 .png 확장자 제거
+  const cleanedUrl = rawUrl.replace(/\.png$/, "")
+  const path = cleanedUrl.replace(/^\/(flat\/)?/, "")
   const [rawHex, alphaRaw] = path.split("/")
+
   const cleanHex = (rawHex || "000000").replace(/[^a-fA-F0-9]/g, "")
   let hex = cleanHex.slice(0, 6)
   let alpha = 1.0
