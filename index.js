@@ -1,9 +1,10 @@
 const { createServer } = require("http");
 
 module.exports = createServer((req, res) => {
-  const url = req.url?.slice(1); // Remove leading slash
-  const [hexRaw, alphaRaw] = url.split("/");
+  const path = req.url?.split("?")[0]?.slice(1) || "";
+  const [hexRaw, alphaRaw] = path.split("/");
 
+  // HEX 클렌징: 6자리 알파벳+숫자만 남기기
   const hex = (hexRaw || "000000").replace(/[^a-fA-F0-9]/g, "").slice(0, 6);
   const alpha = Math.max(0, Math.min(parseInt(alphaRaw || "100", 10), 100));
   const opacity = (alpha / 100).toFixed(2);
@@ -14,7 +15,10 @@ module.exports = createServer((req, res) => {
     </svg>
   `.trim();
 
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "image/svg+xml");
+  res.writeHead(200, {
+    "Content-Type": "image/svg+xml",
+    "Cache-Control": "public, max-age=31536000",
+    "Content-Length": Buffer.byteLength(svg)
+  });
   res.end(svg);
 });
