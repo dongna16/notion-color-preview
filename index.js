@@ -22,6 +22,9 @@ module.exports = createServer((req, res) => {
     opacity = (alphaPct / 100).toFixed(2);
   }
 
+  const width = 48;
+  const height = 48;
+
   // ✅ 체커보드를 오른쪽 24px에만 그림 (x = 24~48)
   let checkerRects = "";
   for (let y = 0; y < height; y += 8) {
