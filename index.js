@@ -1,21 +1,20 @@
 import { createServer } from "http"
-import { Resvg } from "@resvg/resvg-js"
 
 function hexToAlpha(hex2) {
   const decimal = parseInt(hex2, 16)
   return Math.min(Math.max(decimal / 255, 0), 1).toFixed(2)
 }
 
-const server = createServer(async (req, res) => {
+const server = createServer((req, res) => {
   const rawUrl = req.url?.split("?")[0] || "/"
 
   if (rawUrl === "/" || rawUrl.includes("favicon")) {
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" })
-    return res.end("🎨 Notion Color Preview Server is live")
+    return res.end("🎨 Notion Color Preview Server is live (SVG only)")
   }
 
-  // 🔄 .png 확장자 제거
-  const cleanedUrl = rawUrl.replace(/\.png$/, "")
+  // .svg/.png 확장자 제거
+  const cleanedUrl = rawUrl.replace(/\.(svg|png)$/, "")
   const path = cleanedUrl.replace(/^\/(flat\/)?/, "")
   const [rawHex, alphaRaw] = path.split("/")
 
@@ -53,20 +52,12 @@ const server = createServer(async (req, res) => {
 </svg>
 `
 
-  try {
-    const resvg = new Resvg(svg, { fitTo: { mode: "width", value: width } })
-    const png = resvg.render().asPng()
-
-    res.writeHead(200, {
-      "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=31536000",
-      "Content-Length": png.length,
-    })
-    res.end(png)
-  } catch (e) {
-    res.writeHead(500, { "Content-Type": "text/plain" })
-    res.end("⚠️ SVG to PNG rendering error:\n" + e.message)
-  }
+  res.writeHead(200, {
+    "Content-Type": "image/svg+xml",
+    "Cache-Control": "public, max-age=31536000",
+    "Content-Length": Buffer.byteLength(svg),
+  })
+  res.end(svg)
 })
 
 server.listen(3000)
