@@ -1,29 +1,25 @@
+/* ✍️ 이 프로젝트는 Notion에서 디자인 토큰의 색상을 시각적으로 보여주기 위한 "색상 미리보기 서버"입니다. */
+
 # 🎨 Notion Color Preview
 
-Notion에서 사용할 수 있는 HEX + ALPHA 기반 색상 미리보기 SVG 생성기입니다.
+/* ✅ 이 서버는 HEX 값과 Alpha 값을 받아 정사각형 SVG 이미지로 렌더링합니다.  
+   사용자는 Notion Formula 수식을 통해 이 이미지를 자동으로 생성하여,  
+   색상 토큰 시스템에 시각적 미리보기를 적용할 수 있습니다. */
 
-## 📦 사용 방법
+---
 
-- `/ff9900` → 불투명 주황색
-- `/3366ff/50` → 50% 투명한 파랑색
-- `/e2f0f8/8` → 8% 투명한 연하늘색
+## 🛠️ 사용 방법
 
-## 🚀 배포 방법
+/* HEX 값과 투명도(alpha)를 조합하여 URL을 만들면, 해당 색상이 SVG 이미지로 렌더링됩니다. */
 
-1. 이 코드를 GitHub 새 저장소로 업로드
-2. Vercel에서 "Add Project" → 이 저장소 선택 → Deploy
-3. 완료 후 URL: `https://your-project.vercel.app/`
+### 📦 예시
 
-## ✅ Notion에서 사용 예시 수식
+| 입력 | 설명 |
+|------|------|
+| `/ff9900` → | 주황색, 불투명 (`fill-opacity: 1`) |
+| `/ff9900/40` → | 주황색, 40% 투명도 (`fill-opacity: 0.4`) |
+| `/e2f0f814` → | 연하늘색 + 알파값 포함 (8% 투명도) |
 
-```notion
-lets(
-  hex, replaceAll(lower(prop("hexValueRoot")), "#", ""),
-  alpha, prop("alphaValueRoot"),
-  alphaPath, if(
-    or(empty(alpha), alpha >= 100),
-    "",
-    "/" + format(round(alpha))
-  ),
-  "https://notion-color-preview.app/" + hex + alphaPath
-)
+> 📌 위 링크를 Notion 페이지 아이콘 속성에 붙이면, 해당 색상의 시각적 미리보기가 자동으로 표시됩니다.
+
+---
