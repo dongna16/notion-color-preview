@@ -1,6 +1,6 @@
 
 
-# 🎨 Notion Color Preview
+# 🎨 Notion color preview
 
 ✍️ 이 프로젝트는 Notion에서 디자인 토큰의 색상을 시각적으로 보여주기 위한 "색상 미리보기 서버"입니다.
 
