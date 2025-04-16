@@ -2,6 +2,9 @@
 
 # 🎨 Notion color preview
 
+![image](https://github.com/user-attachments/assets/ed4ac92e-f56a-46fb-9012-e81803d786e8)
+
+
 ✍️ 이 프로젝트는 Notion에서 디자인 토큰의 색상을 시각적으로 보여주기 위한 "색상 미리보기 서버"입니다.
 
 ✅ 이 서버는 HEX 값과 Alpha 값을 받아 정사각형(48*48px) SVG 이미지로 렌더링합니다.
