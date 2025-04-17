@@ -93,16 +93,22 @@ const server = createServer((req, res) => {
     </body>
   </html>`;
 
-  // 응답 헤더 설정 및 HTML 전송
-  // - Content-Type: HTML 문서 지정
-  // - Cache-Control: 1년간 캐시 허용
-  // - Content-Length: 응답 크기 명시
+  // SVG 요청 처리 (".svg" 확장자)
+  if (rawUrl.toLowerCase().endsWith('.svg')) {
+    res.writeHead(200, {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=31536000',
+      'Content-Length': Buffer.byteLength(svg),
+    });
+    return res.end(svg);
+  }
+  // 그 외 요청은 중앙정렬 HTML 래퍼로 응답
   res.writeHead(200, {
-    "Content-Type": "text/html; charset=utf-8",
-    "Cache-Control": "public, max-age=31536000",
-    "Content-Length": Buffer.byteLength(html),
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'public, max-age=31536000',
+    'Content-Length': Buffer.byteLength(html),
   });
-  res.end(html)
+  res.end(html);
 })
 
 // 3000번 포트에서 서버 시작
