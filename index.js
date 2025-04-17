@@ -74,121 +74,35 @@ const server = createServer((req, res) => {
   const height = 48
   const checkerAlpha = (1 - alpha).toFixed(2) // 색상 투명도의 반대값
 
-  // SVG를 HTML로 래핑하여 페이지 중앙 정렬
+  // SVG-only response
   const svg = `
-  <!DOCTYPE html>
-  <html>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" shape-rendering="crispEdges">
+  <rect width="${width}" height="${height}" fill="#${hex}" />
+  ${generateCheckerPattern(width, height, checkerAlpha)}
+</svg>`;
+  
+  // 페이지 중앙에 SVG를 렌더링하기 위한 HTML 래퍼
+  const html = `<!DOCTYPE html>
+  <html lang="ko">
     <head>
-      <meta charset="utf-8">
-      <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
-      <link href="https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css" rel="stylesheet">
-      <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-      <style>
-        body {
-          margin: 0;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          font-family: Pretendard, -apple-system, sans-serif;
-        }
-        .preview-text {
-          margin-top: 1.5rem;
-          font-size: 1.125rem;
-          font-weight: 400;
-          color: #191B24;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        .rgb-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .rgb-container {
-          display: flex;
-          align-items: center;
-          font-family: 'D2Coding';
-          font-size: 16px;
-          font-weight: 400;
-          color:rgba(3, 7, 23, 0.6);
-          padding: 2px 8px;
-          border-radius: 6px;
-          background-color: rgba(41, 59, 255, 0.06);
-          border: 1px solid rgba(5, 12, 113, 0.12);
-        }
-        .copy-button {
-          cursor: pointer;
-          color: rgba(3, 7, 23, 0.6);
-          transition: color 0.2s;
-        }
-        .copy-button:hover {
-          color: rgba(3, 7, 23, 0.8);
-        }
-        .toast {
-          position: fixed;
-          left: 50%;
-          bottom: -100px;
-          transform: translateX(-50%);
-          background: #191B24;
-          color: white;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 14px;
-          opacity: 0;
-          visibility: hidden;
-          transition: all 0.3s cubic-bezier(.53, 1.7, .5, .82);
-        }
-        .toast.show {
-          opacity: 1;
-          visibility: visible;
-          bottom: 48px;
-        }
-      </style>
+      <meta charset="utf-8" />
+      <title>Notion Color Preview</title>
     </head>
-    <body>
-      <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" shape-rendering="crispEdges">
-        <rect width="${width}" height="${height}" fill="#${hex}" />
-        ${generateCheckerPattern(width, height, checkerAlpha)}
-      </svg>
-      <div class="preview-text">
-        #${hex.toLowerCase()} ${Math.round(alpha * 100)}%
-        ${alpha < 1 ? `#${hex.toLowerCase()}${Math.round(alpha * 255).toString(16).padStart(2, '0').toLowerCase()}` : ''}
-        <div class="rgb-wrapper">
-          <div class="rgb-container">
-            <span>${alpha < 1 ? `rgba(${parseInt(hex.slice(0,2), 16)}, ${parseInt(hex.slice(2,4), 16)}, ${parseInt(hex.slice(4,6), 16)}, ${alpha})` : `rgb(${parseInt(hex.slice(0,2), 16)}, ${parseInt(hex.slice(2,4), 16)}, ${parseInt(hex.slice(4,6), 16)})`}</span>
-          </div>
-          <i class="ri-file-copy-line copy-button" onclick="copyToClipboard(this.previousElementSibling.querySelector('span').textContent)"></i>
-        </div>
-      </div>
-      <div class="toast" id="toast">값을 클립보드에 저장했어요</div>
-      <script>
-        function copyToClipboard(text) {
-          navigator.clipboard.writeText(text);
-          const toast = document.getElementById('toast');
-          toast.classList.add('show');
-          setTimeout(() => {
-            toast.classList.remove('show');
-          }, 2000);
-        }
-      </script>
+    <body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+      ${svg}
     </body>
-  </html>
-  `
+  </html>`;
 
   // 응답 헤더 설정 및 HTML 전송
   // - Content-Type: HTML 문서 지정
   // - Cache-Control: 1년간 캐시 허용
   // - Content-Length: 응답 크기 명시
   res.writeHead(200, {
-    "Content-Type": "text/html",
+    "Content-Type": "text/html; charset=utf-8",
     "Cache-Control": "public, max-age=31536000",
-    "Content-Length": Buffer.byteLength(svg),
-  })
-  res.end(svg)
+    "Content-Length": Buffer.byteLength(html),
+  });
+  res.end(html)
 })
 
 // 3000번 포트에서 서버 시작
