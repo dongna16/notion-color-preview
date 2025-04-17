@@ -31,25 +31,53 @@ HEX 값과 투명도(alpha)를 조합하여 URL을 만들면, 해당 색상이 S
 ✅ 아래 수식은 사용자가 입력한 HEX + ALPHA 값을 기반으로,
 자동으로 색상 미리보기 이미지의 URL을 생성합니다.
 
-```/* ✍️ lets()는 여러 변수에 값을 할당하고, 이를 조합해 최종 결과를 계산하는 구조입니다. */
+```/* Notion 색상 미리보기 수식
+ * 목적: HEX 색상 코드와 투명도를 입력받아 SVG 미리보기 URL을 자동 생성
+ * 
+ * 입력값:
+ * - _Hex 색상: 6자리 HEX 코드 (#포함 가능)
+ * - _투명도율: 0~100 사이의 숫자 (선택사항)
+ *
+ * 처리 과정:
+ * 1. 입력값 유효성 검사
+ * 2. HEX 코드 정규화 (# 제거, 소문자 변환)
+ * 3. 투명도 계산 및 URL 경로 생성
+ * 4. 최종 SVG URL 조합
+ */
 lets(
-
-  /* 🎨 hex: HEX 색상 코드에서 '#'을 제거하고 소문자로 통일합니다. */
-  hex, replaceAll(lower(prop("hexValueRoot")), "#", ""),
-
-  /* 💧 alpha: 투명도(0~100)를 가져옵니다. (없으면 빈 값) */
-  alpha, prop("alphaValueRoot"),
-
-  /* 🧪 alphaPath: 
-     alpha 값이 비어 있거나 100 이상이면 생략 → 완전 불투명  
-     그 외엔 `/숫자` 형태로 경로에 추가 (예: `/40`) */
+  /* 데이터베이스에서 입력값 가져오기 */
+  hexInput, prop("_Hex 색상"),
+  alphaInput, prop("_투명도율"),
+  
+  /* HEX 코드 정규화 처리
+   * - # 기호 제거
+   * - 대문자를 소문자로 통일
+   */
+  hex, replaceAll(lower(hexInput), "#", ""),
+  
+  /* 투명도 URL 경로 생성
+   * - 빈 값이거나 100% 이상인 경우: 경로 생략
+   * - 0~99% 사이 값: "/숫자" 형식으로 추가
+   * - 음수는 0으로, 100 이상은 생략 처리
+   */
   alphaPath, if(
-    or(empty(alpha), alpha >= 100),
+    or(
+      empty(alphaInput), 
+      alphaInput >= 100
+    ),
     "",
-    "/" + format(round(alpha))
+    "/" + format(min(max(round(alphaInput), 0), 99))
   ),
 
-  /* 🔗 최종 URL 구성: 배포된 SVG 서버 주소 + HEX + (선택적) alphaPath
-     → 이미지 속성에 붙여 넣으면 색상 미리보기 자동 생성 */
-  "https://notioncolorpreview.vercel.app/" + hex + alphaPath
+  /* 최종 URL 생성
+   * - 입력값이 없는 경우: 빈 문자열 반환
+   * - 입력값이 있는 경우: SVG URL 생성
+   * - .svg 확장자 추가로 명시적 파일 형식 지정
+   */
+  if(
+    empty(hexInput),
+    "",
+    "https://notioncolorpreview.vercel.app/" + 
+    hex + alphaPath + ".svg"
+  )
 )
